@@ -13,7 +13,8 @@ public class News {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
-
+    private String describe;
+    
     public long getId() {
         return id;
     }
@@ -29,4 +30,6 @@ public class News {
     public void setTitle(String title) {
         this.title = title;
     }
+    
+
 }

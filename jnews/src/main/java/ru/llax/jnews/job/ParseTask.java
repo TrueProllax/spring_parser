@@ -22,21 +22,34 @@ public class ParseTask {
     
     @Scheduled(fixedDelay = 10000)
     public void parseNewNews() {
-        String url = "https://yandex.ru/news";
+        //String url = "https://news.ycombinator.com/";
+        String url = "https://elenaruvel.com/50-faktov-o-yaponii/";
         
         try {
             Document doc = Jsoup.connect(url)
                     .userAgent("Microsoft Edge")
                     .timeout(5000)
-                    .referrer("https://google.com")
+                    .referrer("https://yandex.ru/")
                     .get();
-            Elements news = doc.getElementsByClass("mg-card__link");
+            
+            Elements news = doc.getElementsByClass("entry-content");
+            
+            Elements newsSite = doc.getElementsByClass("sitestr");
             for (Element el : news) {
                 String title = el.ownText();
-                if (!newsService.isExist(title)) {
-                    News obj = new News();
-                    obj.setTitle(title);
-                    newsService.save(obj);
+                
+                for (Element fact : el.getElementsByTag("li")) {
+                    try {
+                        String text = fact.ownText();
+                            if (!newsService.isExist(text) && (text.length() < 255)) {
+                                News obj = new News();
+                                obj.setTitle(text);
+                                newsService.save(obj);
+                            }
+                    } catch (Exception e) {
+                        
+                    }
+                    
                 }
             }
         } catch (IOException ex) {
